@@ -31,6 +31,10 @@ app.get('/', function(req, res){
   res.send('hello');
 });
 
+app.post("/logStarted", function(req, res) {
+  res.end("ok");
+});
+
 app.get("/view", function(req, res) {
   res.sendfile(_filePath);
 });

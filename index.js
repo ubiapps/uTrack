@@ -51,7 +51,11 @@ app.post("/logData", function(req, res) {
       if (!_cache.hasOwnProperty(logId)) {
         _cache[logId] = [];
       }
-      _cache[logId] = _cache[logId].concat(logParsed);
+      var timestamp = Date.now();
+      var mapped = logParsed.map(function(el) {
+        return { timestamp: timestamp, location: el };
+      });
+      _cache[logId] = _cache[logId].concat(mapped);
       saveCache();
       res.write("ok");
     } catch (e) {

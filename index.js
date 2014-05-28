@@ -32,6 +32,7 @@ app.get('/', function(req, res){
 });
 
 app.post("/logStarted", function(req, res) {
+  console.log("received logStarted");
   res.end("ok");
 });
 
@@ -40,6 +41,7 @@ app.get("/view", function(req, res) {
 });
 
 app.post("/logData", function(req, res) {
+  console.log("received logData");
   try {
     var logId = req.body.id;
     var logData = req.body.logData;

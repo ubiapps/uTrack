@@ -1,7 +1,8 @@
 $(function() {
+  var startPoint = new google.maps.LatLng(mapData[0].location.coords.latitude,mapData[0].location.coords.longitude);
   var mapOptions = {
-    center: new google.maps.LatLng(51.51541954569622,-0.14183521270751953),
-    zoom: 8,
+    center: startPoint,
+    zoom: 16,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     navigationControl: true,
     navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
@@ -12,9 +13,9 @@ $(function() {
   });
   var line = new google.maps.Polyline({
     path: routePath,
-    strokeColor: "#FF0000",
+    strokeColor: "#00007f",
     strokeOpacity: 1.0,
-    strokeWeight: 10,
+    strokeWeight: 1,
     map: _map
   });
 });

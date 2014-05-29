@@ -9,20 +9,25 @@
           (1 - Math.cos((lon2 - lon1) * Math.PI / 180))/2;
 
     return R * 2 * Math.asin(Math.sqrt(a));
-  }
+  };
 
-  var determineRoutes = function(id, stationaryThreshold) {
-    var routes = [];
+  var getRoutes = function(id, stationaryThreshold) {
+    var routes = {};
     var mapData = cache.getData(id);
-    var newRoute = function() {
-      var rt = { device: id, index: routes.length, distance: 0, speed: 0, points: [] };
-      routes.push(rt);
+    var newRoute = function(startData) {
+      var rt = { device: id, start: startData.location.timestamp, distance: 0, speed: 0, points: [] };
+      var dateStart = new Date(rt.start).toDateString();
+      if (!routes.hasOwnProperty(dateStart)) {
+        routes[dateStart] = [];
+      }
+      rt.index = routes[dateStart].length;
+      routes[dateStart].push(rt);
       return rt;
     };
 
     // Need at least two way-points.
     if (mapData.length > 1) {
-      var route = newRoute();
+      var route = newRoute(mapData[0]);
       route.start = mapData[0].location.timestamp;
       for (var i = 0, len = mapData.length; i < len-1; i++) {
         var p1 = mapData[i].location.coords;
@@ -38,18 +43,17 @@
         route.speed += speed;
         // Add point to route.
         route.points.push(mapData[i]);
-
         // Check for new route.
         if (time > stationaryThreshold) {
-          route = newRoute();
+          route = newRoute(mapData[i+1]);
         }
       }
     }
 
     return routes;
-  }
+  };
 
   module.exports = {
-    getRoutes: determineRoutes
+    getRoutes: getRoutes
   };
 }());

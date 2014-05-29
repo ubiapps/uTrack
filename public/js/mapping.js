@@ -32,9 +32,13 @@ $(function() {
     $(".loading").show();
     window.location = "/map/" + encodeURIComponent($(this).val());
   });
-  $("#routeSelect").on("change.fs", function() {
+  $("#dateSelect").on("change.fs", function() {
     $(".loading").show();
     window.location = "/map/" + encodeURIComponent(deviceId) + "/" + encodeURIComponent($(this).val());
+  });
+  $("#routeSelect").on("change.fs", function() {
+    $(".loading").show();
+    window.location = "/map/" + encodeURIComponent(deviceId) + "/" + routeDate + "/" + encodeURIComponent($(this).val());
   });
   if (mapData.hasOwnProperty("points")) {
     var route = mapData.points;

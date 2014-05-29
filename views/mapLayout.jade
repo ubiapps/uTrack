@@ -1,7 +1,7 @@
 doctype html5
 html
   head
-    title #{pageTitle}
+    title uTrack - ubiapps
     link(rel="stylesheet", href="/css/normalize.css")
     link(rel="stylesheet", href="/css/style.css")
     link(rel="stylesheet", href="/js/fancySelect/fancySelect.css")
@@ -12,8 +12,9 @@ html
         $(".styleSelect").fancySelect();
       });
     script.
-      var mapData = !{routeIndex < 0 ? "{}" : JSON.stringify(routes[routeIndex])};
+      var mapData = !{routeDate.length === 0 || routeIndex < 0 ? "{}" : JSON.stringify(routes[routeDate][routeIndex])};
       var deviceId = "#{deviceId}";
+      var routeDate = "#{routeDate}";
     script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdYy1RHr1ryZejV0uocIsAnOyY5G43smo&sensor=false")
     script(src="/js/mapping.js")
   body
@@ -27,13 +28,25 @@ html
               option(value="#{device}", selected=true) #{device}
             else
               option(value="#{device}") #{device}
-      div.headerSelect
-        select.styleSelect#routeSelect
-          option(value="") route
-          each route in routes
-            if route.index == routeIndex
-              option(value="#{route.index}", selected=true) #{route.distance.toFixed(1) + "m"}
-            else
-              option(value="#{route.index}") #{route.distance.toFixed(1) + "m"}
+      if deviceId !== ""
+        div.headerSelect
+          select.styleSelect#dateSelect
+            option(value="") date
+            - for (var rDate in routes) {
+              - if (rDate === routeDate) {
+                option(value="#{rDate}", selected=true) #{rDate}
+              - } else {
+                option(value="#{rDate}") #{rDate}
+              -}
+            -}
+      if routeDate !== ""
+        div.headerSelect
+          select.styleSelect#routeSelect
+            option(value="") route
+            each route in routes[routeDate]
+              if route.index == routeIndex
+                option(value="#{route.index}", selected=true) #{route.distance.toFixed(1) + "m"}
+              else
+                option(value="#{route.index}") #{route.distance.toFixed(1) + "m"}
       div.routeMap
       div.loading

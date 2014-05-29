@@ -30,7 +30,7 @@ html
               option(value="#{device}") #{device}
       if deviceId !== ""
         div.headerSelect
-          select.styleSelect#dateSelect
+          select.styleSelect#dateSelect(data-class="dateSelect")
             option(value="") date
             - for (var rDate in routes) {
               - if (rDate === routeDate) {
@@ -41,7 +41,7 @@ html
             -}
       if routeDate !== ""
         div.headerSelect
-          select.styleSelect#routeSelect
+          select.styleSelect#routeSelect(data-class="routeSelect")
             option(value="") route
             each route in routes[routeDate]
               if route.index == routeIndex

@@ -1,9 +1,14 @@
 var path = require("path");
 var fs = require("fs");
 var express = require("express");
+var jade = require("jade");
 var bodyParser = require("body-parser");
 var app = express();
+app.set("views", __dirname + "/views");
+app.set("view engine","jade");
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
+app.locals.pretty = true;
 
 var _cache;
 var _filePath = path.join(__dirname,"logData.json");
@@ -38,6 +43,11 @@ app.post("/logStarted", function(req, res) {
 
 app.get("/view", function(req, res) {
   res.sendfile(_filePath);
+});
+
+app.get("/map/:id", function(req, res) {
+  var data = JSON.stringify(_cache["ezh@ezh.ubiapps.com/6f10b55dfc5aa2e1"]);
+  res.render("map", { pageTitle: "..::map::..", data: data });
 });
 
 app.post("/logData", function(req, res) {

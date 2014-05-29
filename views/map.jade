@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  script.
+    var mapData = !{data};
+
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdYy1RHr1ryZejV0uocIsAnOyY5G43smo&sensor=false")
+  script(src="/js/mapping.js")
+
+  h1 #{pageTitle}
+
+  div.routeMap
+
+
+

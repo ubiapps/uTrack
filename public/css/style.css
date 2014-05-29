@@ -1,5 +1,31 @@
+body {
+    padding: 4px;
+}
+
+header {
+    background-color: #eaeff2;
+    background-image: url("header.png");
+    background-repeat: repeat-x;
+    background-position: top left;
+    height: 100px;
+}
+
+.logo {
+    background-image: url("logo.png");
+    background-repeat: no-repeat;
+    background-size: 200px;
+    width: 200px;
+    height: 65px;
+    display: block;
+    text-indent: -9999px;
+    overflow: hidden;
+}
+
+.main {
+    padding: 10px;
+}
+
 .routeMap {
-    width: 500px;
-    height: 500px;
-    border: 1px solid black;
+    width: 100%;
+    height: 100%;
 }

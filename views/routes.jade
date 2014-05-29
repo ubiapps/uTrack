@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  script.
+    var deviceId = "!{deviceId}";
+  script(src="/js/routes.js")
+  span. select route
+  select#routes
+    each route in routes
+      option(value="#{route.index}") #{route.distance.toFixed(1)}m on #{new Date(route.start).toString()}
+  button#routeBtn. view

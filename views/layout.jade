@@ -1,11 +1,18 @@
 doctype html5
 html
-	head
-		title #{pageTitle}
-		link(rel="stylesheet", href="/css/normalize.css")
-		link(rel="stylesheet", href="/css/style.css")
-		script(src="http://code.jquery.com/jquery-latest.min.js")
-	body
-		div.main
+  head
+    title #{pageTitle}
+    link(rel="stylesheet", href="/css/normalize.css")
+    link(rel="stylesheet", href="/css/style.css")
+    link(rel="stylesheet", href="/js/simpleSelect/jquery.simpleselect.css")
+    script(src="http://code.jquery.com/jquery-latest.min.js")
+    script(src="/js/simpleSelect/jquery.simpleselect.min.js")
+    script.
+      $(function() {
 
-			block content
+      });
+  body
+    header
+      a.logo(href="/") uTrack
+    div.main
+      block content

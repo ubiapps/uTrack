@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  script(src="/js/devices.js")
+  span. select device
+  select#devices
+    each device in devices
+      option #{device}
+  button#deviceBtn. view

@@ -27,50 +27,8 @@ head
             img(src="/css/logo.png", style="height:36px;")
         .navbar-collapse.collapse
           ul.nav.navbar-nav.navbar-right
-            li.dropdown
-              a.dropdown-toggle(href='#', data-toggle='dropdown')
-                if deviceId === ""
-                  | select device
-                else
-                  | #{deviceId}
-                b.caret
-              ul.dropdown-menu
-                each device in devices
-                  if device !== deviceId
-                    li
-                      a(href="/#{encodeURIComponent(device)}") #{device}
-            if deviceId !== ""
-              li.dropdown
-                a.dropdown-toggle(href='#', data-toggle='dropdown')
-                  if routeDate === ""
-                    | select date
-                  else
-                    | #{routeDate}
-                  if routeDate === "" || Object.keys(routes).length > 1
-                      b.caret
-                if routeDate === "" || Object.keys(routes).length > 1
-                  ul.dropdown-menu
-                    - for (var rDate in routes) {
-                      - if (rDate !== routeDate) {
-                          li
-                            a(href="/#{encodeURIComponent(deviceId)}/#{rDate}") #{rDate}
-                      -}
-                    -}
-            if routeDate !== ""
-              li.dropdown
-                a.dropdown-toggle(href='#', data-toggle='dropdown')
-                  if routeIndex === -1
-                    | select journey
-                  else
-                    | #{routes[routeDate][routeIndex].distance.toFixed(1) + "m at " + new Date(routes[routeDate][routeIndex].start).toTimeString().substr(0,9)}
-                  if routeIndex === -1 || routes[routeDate].length > 1
-                    b.caret
-                if routeIndex === -1 || routes[routeDate].length > 1
-                  ul.dropdown-menu
-                    each route in routes[routeDate]
-                      if route.index != routeIndex
-                        li
-                          a(href="/#{encodeURIComponent(deviceId)}/#{routeDate}/#{route.index}") #{route.distance.toFixed(1) + "m at " + new Date(route.start).toTimeString().substr(0,9)}
+            li
+              button#journeySelector(class="btn btn-primary navbar-btn", type="button") select journey
             li.dropdown
               a.dropdown-toggle(href='#', data-toggle='dropdown')
                   | analysis
@@ -84,6 +42,37 @@ head
               li.dropdown
                 button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#routeSelector") Launch demo modal
 
+    .routeSelectorDialog.modal.fade#routeSelector(role="dialog", aria-labelledby="selectorLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type="button",data-dismiss="modal",aria-hidden="true") &times;
+            h4.modal-title#selectorLabel route selector
+          .modal-body
+            ul.nav
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  if deviceId === ""
+                    | select device
+                  else
+                    | #{deviceId}
+                  b.caret
+                ul.dropdown-menu
+                  each device in devices
+                    if device !== deviceId
+                      li
+                        a.deviceSelector(href="#", data-device="#{encodeURIComponent(device)}") #{device}
+              li.dropdown.routeDatesDropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  | select date
+                  b.caret
+                ul.dropdown-menu.routeDatesList
+              li.dropdown.routeIndexDropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  | select journey
+                  b.caret
+                ul.dropdown-menu.routeIndexList
+          .modal-footer
     .routeMap
     .loading
 

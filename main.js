@@ -12,6 +12,34 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.locals.pretty = true;
 
+app.get("/api/devices", function(req,res) {
+  res.json(cache.getDevices());
+});
+
+app.get("/api/:id", function(req,res) {
+  var deviceId = req.param("id");
+  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
+  res.json(Object.keys(routes));
+});
+
+app.get("/api/:id/:routeDate", function(req, res) {
+  var deviceId = req.param("id");
+  var routeDate = req.param("routeDate");
+  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
+  var headers = routes[routeDate].map(function(el) {
+    delete el.points; return el;
+  });
+  res.json(routes[routeDate]);
+});
+
+app.get("/api/:id/:routeDate/:routeIndex", function(req, res) {
+  var deviceId = req.param("id");
+  var routeDate = req.param("routeDate");
+  var routeIndex = req.param("routeIndex");
+  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
+  res.json(routes[routeDate][routeIndex]);
+});
+
 app.get("/view", function(req, res) {
   res.sendfile(_filePath);
 });
@@ -43,17 +71,6 @@ app.get("/:id/:routeDate/:routeIndex", function(req, res) {
   var routeIndex = req.param("routeIndex");
   var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
   res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: routeIndex });
-});
-
-app.get("/api/devices", function(req,res) {
-  res.json(cache.getDevices());
-});
-
-app.get("/api/:id", function(req,res) {
-  var devices = cache.getDevices();
-  var deviceId = req.param("id");
-  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.json(Object.keys(routes));
 });
 
 app.post("/logStarted", function(req, res) {

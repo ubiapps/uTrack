@@ -1,3 +1,7 @@
+var _map;
+var _mapOverlays = [];
+var routeIndex;
+
 function distance(lat1, lon1, lat2, lon2) {
   var R = 6371;
   var a =
@@ -50,6 +54,25 @@ var smoothRoute = function(route) {
   return points;
 };
 
+var drawRoute = function(mapData) {
+  // Clear any existing overlays.
+  while (_mapOverlays.length > 0) {
+    _mapOverlays.pop().setMap(null);
+  }
+
+  // Smooth the route data.
+  var smoothed = smoothRoute(mapData);
+
+  var line = new google.maps.Polyline({
+    path: smoothed,
+    strokeColor: "#00007f",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    map: _map
+  });
+  _mapOverlays.push(line);
+};
+
 $(function() {
   $("#deviceSelect").on("change.fs", function() {
     $(".loading").show();
@@ -63,31 +86,66 @@ $(function() {
     $(".loading").show();
     window.location = "/map/" + encodeURIComponent(deviceId) + "/" + routeDate + "/" + encodeURIComponent($(this).val());
   });
-  if (typeof mapData !== "undefined" && mapData.hasOwnProperty("points")) {
-    var smoothed = smoothRoute(mapData);
-    var mapOptions = {
-      center: smoothed[0],
-      zoom: 16,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      navigationControl: true,
-      navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
-    };
-    var _map = new google.maps.Map($(".routeMap")[0], mapOptions);
-    var line = new google.maps.Polyline({
-      path: smoothed,
-      strokeColor: "#00007f",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      map: _map
-    });
-  } else {
-    var mapOptions = {
-      center: new google.maps.LatLng(51.51541954569622,-0.14183521270751953),
-      zoom: 8,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      navigationControl: true,
-      navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
-    };
-    var _map = new google.maps.Map($(".routeMap")[0], mapOptions);
-  }
+
+  var mapOptions = {
+    center: new google.maps.LatLng(51.51541954569622,-0.14183521270751953),
+    zoom: 8,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    navigationControl: true,
+    navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
+  };
+  _map = new google.maps.Map($(".routeMap")[0], mapOptions);
+
+//  setTimeout(function() { $(".routeSelectorDialog").modal({ show: true});}, 1000);
+
+  $("#journeySelector").click(function(evt) {
+    evt.preventDefault();
+    $(".routeSelectorDialog").modal({ show: true});
+  });
+
+  $(".deviceSelector").click(function(evt) {
+    evt.preventDefault();
+
+    deviceId = this.dataset["device"];
+    $.ajax({
+      url: "/api/" + deviceId,
+      cache: false
+    }).done(function(routeDates) {
+        $(".routeDatesDropdown").show();
+        $(".routeDatesList").empty();
+        for (var i = 0, len = routeDates.length; i < len; i++) {
+          $(".routeDatesList").append("<li><a class='dateSelector' href='#' data-routedate='" + routeDates[i] + "'>" + routeDates[i] + "</a>");
+        }
+      });
+  });
+
+  $(document).on("click",".dateSelector",function(evt) {
+    evt.preventDefault();
+
+    routeDate = this.dataset["routedate"];
+    $.ajax({
+      url: "/api/" + deviceId + "/" + routeDate,
+      cache: false
+    }).done(function(routeIndices) {
+        $(".routeIndexDropdown").show();
+        $(".routeIndexList").empty();
+        for (var i = 0, len = routeIndices.length; i < len; i++) {
+          var route = routeIndices[i];
+          $(".routeIndexList").append("<li><a class='routeSelector' href='#' data-routeindex='" + route.index + "'>" + route.distance.toFixed(1) + "m at " + new Date(route.start).toTimeString().substr(0,9) + "</a>");
+        }
+      });
+  });
+
+  $(document).on("click",".routeSelector",function(evt) {
+    evt.preventDefault();
+
+    routeIndex = this.dataset["routeindex"];
+    $.ajax({
+      url: "/api/" + deviceId + "/" + routeDate + "/" + routeIndex,
+      cache: false
+    }).done(function(routeData) {
+        drawRoute(routeData);
+        $(".routeSelectorDialog").modal({ show: false});
+      });
+  });
 });

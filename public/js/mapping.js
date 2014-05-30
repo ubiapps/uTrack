@@ -63,7 +63,7 @@ $(function() {
     $(".loading").show();
     window.location = "/map/" + encodeURIComponent(deviceId) + "/" + routeDate + "/" + encodeURIComponent($(this).val());
   });
-  if (mapData.hasOwnProperty("points")) {
+  if (typeof mapData !== "undefined" && mapData.hasOwnProperty("points")) {
     var smoothed = smoothRoute(mapData);
     var mapOptions = {
       center: smoothed[0],
@@ -80,6 +80,14 @@ $(function() {
       strokeWeight: 2,
       map: _map
     });
+  } else {
+    var mapOptions = {
+      center: new google.maps.LatLng(51.51541954569622,-0.14183521270751953),
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      navigationControl: true,
+      navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
+    };
+    var _map = new google.maps.Map($(".routeMap")[0], mapOptions);
   }
-
 });

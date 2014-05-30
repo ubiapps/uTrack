@@ -12,56 +12,42 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.locals.pretty = true;
 
-app.get('/', function(req, res){
-  res.send('hello');
-});
-
-app.post("/logStarted", function(req, res) {
-  console.log("received logStarted");
-  res.end("ok");
-});
-
 app.get("/view", function(req, res) {
   res.sendfile(_filePath);
 });
 
-app.get("/devices", function(req, res) {
-  res.render("devices", { pageTitle: "devices", devices: cache.getDevices() });
-});
-
-app.get("/routes/:id", function(req, res) {
-  var deviceId = req.param("id");
-  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("routes", { pageTitle: "routes", deviceId: deviceId, routes: routes });
-});
-
-app.get("/map", function(req, res) {
+app.get("/", function(req, res) {
   var devices = cache.getDevices();
-  res.render("mapLayout", { pageTitle: "map", devices: devices, deviceId: "", routes: {}, routeDate: "", routeIndex: -1 });
+  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: "", routes: {}, routeDate: "", routeIndex: -1 });
 });
 
-app.get("/map/:id", function(req, res) {
+app.get("/:id", function(req, res) {
   var devices = cache.getDevices();
   var deviceId = req.param("id");
   var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("mapLayout", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: "", routeIndex: -1 });
+  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: "", routeIndex: -1 });
 });
 
-app.get("/map/:id/:routeDate", function(req, res) {
+app.get("/:id/:routeDate", function(req, res) {
   var devices = cache.getDevices();
   var deviceId = req.param("id");
   var routeDate = req.param("routeDate");
   var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("mapLayout", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: -1 });
+  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: -1 });
 });
 
-app.get("/map/:id/:routeDate/:routeIndex", function(req, res) {
+app.get("/:id/:routeDate/:routeIndex", function(req, res) {
   var devices = cache.getDevices();
   var deviceId = req.param("id");
   var routeDate = req.param("routeDate");
   var routeIndex = req.param("routeIndex");
   var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("mapLayout", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: routeIndex });
+  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: routeIndex });
+});
+
+app.post("/logStarted", function(req, res) {
+  console.log("received logStarted");
+  res.end("ok");
 });
 
 app.post("/logData", function(req, res) {

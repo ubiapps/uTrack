@@ -1,0 +1,98 @@
+doctype html5
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    link(rel='shortcut icon', href='/favicon.ico')
+    title uTrack UbiApps
+    link(href='/libs/bootstrap/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/css/bootStyle.css', rel='stylesheet')
+    script.
+      var mapData = !{routeDate.length === 0 || routeIndex < 0 ? "{}" : JSON.stringify(routes[routeDate][routeIndex])};
+      var deviceId = "#{deviceId}";
+      var routeDate = "#{routeDate}";
+  body
+    .navbar.navbar-default.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='/')
+            img(src="/css/logo.png", style="height:36px;")
+        .navbar-collapse.collapse
+          ul.nav.navbar-nav.navbar-right
+            li.dropdown
+              a.dropdown-toggle(href='#', data-toggle='dropdown')
+                if deviceId === ""
+                  | select device
+                else
+                  | #{deviceId}
+                b.caret
+              ul.dropdown-menu
+                each device in devices
+                  if device !== deviceId
+                    li
+                      a(href="/#{encodeURIComponent(device)}") #{device}
+            if deviceId !== ""
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  if routeDate === ""
+                    | select date
+                  else
+                    | #{routeDate}
+                  if routeDate === "" || Object.keys(routes).length > 1
+                      b.caret
+                if routeDate === "" || Object.keys(routes).length > 1
+                  ul.dropdown-menu
+                    - for (var rDate in routes) {
+                      - if (rDate !== routeDate) {
+                          li
+                            a(href="/#{encodeURIComponent(deviceId)}/#{rDate}") #{rDate}
+                      -}
+                    -}
+            if routeDate !== ""
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  if routeIndex === -1
+                    | select journey
+                  else
+                    | #{routes[routeDate][routeIndex].distance.toFixed(1) + "m at " + new Date(routes[routeDate][routeIndex].start).toTimeString().substr(0,9)}
+                  if routeIndex === -1 || routes[routeDate].length > 1
+                    b.caret
+                if routeIndex === -1 || routes[routeDate].length > 1
+                  ul.dropdown-menu
+                    each route in routes[routeDate]
+                      if route.index != routeIndex
+                        li
+                          a(href="/#{encodeURIComponent(deviceId)}/#{routeDate}/#{route.index}") #{route.distance.toFixed(1) + "m at " + new Date(route.start).toTimeString().substr(0,9)}
+            li.dropdown
+              a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  | analysis
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a(href="#") driver
+                  li
+                    a(href="#") vehicle
+          //
+            ul.nav.navbar-nav.navbar-right
+              li
+                a(href='../navbar/') Default
+              li
+                a(href='../navbar-static-top/') Static top
+              li.active
+                a(href='./') Fixed top
+
+    .routeMap
+    .loading
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+    script(src='/libs/bootstrap/js/bootstrap.min.js')
+    script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdYy1RHr1ryZejV0uocIsAnOyY5G43smo&sensor=false")
+    script(src="/js/mapping.js")

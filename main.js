@@ -45,6 +45,17 @@ app.get("/:id/:routeDate/:routeIndex", function(req, res) {
   res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: routeIndex });
 });
 
+app.get("/api/devices", function(req,res) {
+  res.json(cache.getDevices());
+});
+
+app.get("/api/:id", function(req,res) {
+  var devices = cache.getDevices();
+  var deviceId = req.param("id");
+  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
+  res.json(Object.keys(routes));
+});
+
 app.post("/logStarted", function(req, res) {
   console.log("received logStarted");
   res.end("ok");

@@ -23,7 +23,7 @@ head
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/')
+          a.navbar-brand(href='/', style="position:fixed;")
             img(src="/css/logo.png", style="height:36px;")
         .navbar-collapse.collapse
           ul.nav.navbar-nav.navbar-right
@@ -80,6 +80,9 @@ head
                     a(href="#") driver behaviour
                   li
                     a(href="#") vehicle metrics
+            //
+              li.dropdown
+                button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#routeSelector") Launch demo modal
 
     .routeMap
     .loading

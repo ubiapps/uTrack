@@ -15,20 +15,24 @@
     var routes = {};
     var mapData = cache.getData(id);
     var newRoute = function(startData) {
-      var rt = { device: id, start: startData.location.timestamp, distance: 0, speed: 0, points: [] };
-      var dateStart = new Date(rt.start).toDateString();
-      if (!routes.hasOwnProperty(dateStart)) {
-        routes[dateStart] = [];
+      return  { device: id, start: startData.location.timestamp, distance: 0, speed: 0, points: [] };
+    };
+    var addRoute = function(rt) {
+      if (rt.points.length > 1) {
+        var dateStart = new Date(rt.start).toDateString();
+        if (!routes.hasOwnProperty(dateStart)) {
+          routes[dateStart] = [];
+        }
+        rt.index = routes[dateStart].length;
+        routes[dateStart].push(rt);
+      } else {
+        console.log("ignoring route with less than two way-points");
       }
-      rt.index = routes[dateStart].length;
-      routes[dateStart].push(rt);
-      return rt;
     };
 
     // Need at least two way-points.
     if (mapData.length > 1) {
       var route = newRoute(mapData[0]);
-      route.start = mapData[0].location.timestamp;
       for (var i = 0, len = mapData.length; i < len-1; i++) {
         var p1 = mapData[i].location.coords;
         var p2 = mapData[i+1].location.coords;
@@ -45,9 +49,11 @@
         route.points.push(mapData[i]);
         // Check for new route.
         if (time > stationaryThreshold) {
+          addRoute(route);
           route = newRoute(mapData[i+1]);
         }
       }
+      addRoute(route);
     }
 
     return routes;

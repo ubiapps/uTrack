@@ -96,9 +96,9 @@ $(function() {
 
   $("#journeySelector").click(function(evt) {
     evt.preventDefault();
-    _routeDate = "";
+    $("#selectedDevice").html("select vehicle <b class='caret' />");
+    $("#selectedDate").html("select date <b class='caret' />");
     $(".routeDatesDropdown").hide();
-    _routeIndex = -1;
     $(".routeIndexDropdown").hide();
     $(".routeSelectorDialog").modal("show");
   });

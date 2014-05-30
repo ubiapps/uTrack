@@ -41,27 +41,12 @@ app.get("/api/:id/:routeDate/:routeIndex", function(req, res) {
 });
 
 app.get("/view", function(req, res) {
-  res.sendfile(_filePath);
+  res.sendfile(cache.getCacheFilePath());
 });
 
 app.get("/", function(req, res) {
   var devices = cache.getDevices();
-  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: "", routes: {}, routeDate: "", routeIndex: -1 });
-});
-
-app.get("/:id", function(req, res) {
-  var devices = cache.getDevices();
-  var deviceId = req.param("id");
-  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: "", routeIndex: -1 });
-});
-
-app.get("/:id/:routeDate", function(req, res) {
-  var devices = cache.getDevices();
-  var deviceId = req.param("id");
-  var routeDate = req.param("routeDate");
-  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: -1 });
+  res.render("uTrack", { pageTitle: "uTrack", devices: devices, deviceId: "", routeDate: "", routeIndex: -1 });
 });
 
 app.get("/:id/:routeDate/:routeIndex", function(req, res) {
@@ -69,8 +54,7 @@ app.get("/:id/:routeDate/:routeIndex", function(req, res) {
   var deviceId = req.param("id");
   var routeDate = req.param("routeDate");
   var routeIndex = req.param("routeIndex");
-  var routes = geoRoutes.getRoutes(deviceId, routeThreshold);
-  res.render("uTrack", { pageTitle: "map", devices: devices, deviceId: deviceId, routes: routes, routeDate: routeDate, routeIndex: routeIndex });
+  res.render("uTrack", { pageTitle: "uTrack", devices: devices, deviceId: deviceId, routeDate: routeDate, routeIndex: routeIndex });
 });
 
 app.post("/logStarted", function(req, res) {

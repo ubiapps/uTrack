@@ -50,6 +50,7 @@
   loadCache();
 
   module.exports = {
+    getCacheFilePath: function() { return _filePath },
     loadCache: loadCache,
     saveCache: saveCache,
     getDevices: getDevices,

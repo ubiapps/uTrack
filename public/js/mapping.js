@@ -75,20 +75,16 @@ var drawRoute = function(mapData) {
   _map.setZoom(15);
 };
 
-$(function() {
-  $("#deviceSelect").on("change.fs", function() {
-    $(".loading").show();
-    window.location = "/map/" + encodeURIComponent($(this).val());
-  });
-  $("#dateSelect").on("change.fs", function() {
-    $(".loading").show();
-    window.location = "/map/" + encodeURIComponent(_deviceId) + "/" + encodeURIComponent($(this).val());
-  });
-  $("#routeSelect").on("change.fs", function() {
-    $(".loading").show();
-    window.location = "/map/" + encodeURIComponent(_deviceId) + "/" + _routeDate + "/" + encodeURIComponent($(this).val());
-  });
+var loadRoute = function(deviceId, routeDate, routeIndex) {
+  $.ajax({
+    url: "/api/" + deviceId + "/" + routeDate + "/" + routeIndex,
+    cache: false
+  }).done(function(routeData) {
+      drawRoute(routeData);
+    });
+};
 
+$(function() {
   var mapOptions = {
     center: new google.maps.LatLng(51.51541954569622,-0.14183521270751953),
     zoom: 8,
@@ -98,17 +94,20 @@ $(function() {
   };
   _map = new google.maps.Map($(".routeMap")[0], mapOptions);
 
-//  setTimeout(function() { $(".routeSelectorDialog").modal({ show: true});}, 1000);
-
   $("#journeySelector").click(function(evt) {
     evt.preventDefault();
-    $(".routeSelectorDialog").modal({ show: true});
+    _routeDate = "";
+    $(".routeDatesDropdown").hide();
+    _routeIndex = -1;
+    $(".routeIndexDropdown").hide();
+    $(".routeSelectorDialog").modal("show");
   });
 
   $(".deviceSelector").click(function(evt) {
     evt.preventDefault();
 
     _deviceId = this.dataset["device"];
+    $("#selectedDevice").html(decodeURIComponent(_deviceId) + "<b class='caret' />");
     $.ajax({
       url: "/api/" + _deviceId,
       cache: false
@@ -125,6 +124,7 @@ $(function() {
     evt.preventDefault();
 
     _routeDate = this.dataset["routedate"];
+    $("#selectedDate").html(_routeDate + "<b class='caret' />");
     $.ajax({
       url: "/api/" + _deviceId + "/" + _routeDate,
       cache: false
@@ -142,12 +142,11 @@ $(function() {
     evt.preventDefault();
 
     _routeIndex = this.dataset["routeindex"];
-    $.ajax({
-      url: "/api/" + _deviceId + "/" + _routeDate + "/" + _routeIndex,
-      cache: false
-    }).done(function(routeData) {
-        drawRoute(routeData);
-        $(".routeSelectorDialog").modal("hide");
-      });
+    loadRoute(_deviceId, _routeDate, _routeIndex);
+    $(".routeSelectorDialog").modal("hide");
   });
+
+  if (_deviceId.length > 0 && _routeDate.length > 0 && _routeIndex >= 0) {
+    loadRoute(_deviceId,_routeDate,_routeIndex);
+  }
 });

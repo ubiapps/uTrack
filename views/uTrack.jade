@@ -11,7 +11,7 @@ head
     link(href='/libs/bootstrap/css/bootstrap.min.css', rel='stylesheet')
     link(href='/css/bootStyle.css', rel='stylesheet')
     script.
-      var _deviceId = "#{deviceId}";
+      var _deviceId = "#{encodeURIComponent(deviceId)}";
       var _routeDate = "#{routeDate}";
       var _routeIndex = #{routeIndex};
   body
@@ -35,12 +35,12 @@ head
                   b.caret
                 ul.dropdown-menu
                   li
+                    a(href="#") journey details
+                  li.divider
+                  li
                     a(href="#") driver behaviour
                   li
-                    a(href="#") vehicle metrics
-            //
-              li.dropdown
-                button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#routeSelector") Launch demo modal
+                    a(href="#") vehicle behaviour
 
     .routeSelectorDialog.modal.fade#routeSelector(role="dialog", aria-labelledby="selectorLabel" aria-hidden="true")
       .modal-dialog
@@ -51,8 +51,8 @@ head
           .modal-body
             ul.nav
               li.dropdown
-                a.dropdown-toggle(href='#', data-toggle='dropdown')
-                  | select device
+                a.dropdown-toggle#selectedDevice(href='#', data-toggle='dropdown')
+                  | select vehicle
                   b.caret
                 ul.dropdown-menu
                   each device in devices
@@ -60,7 +60,7 @@ head
                       li
                         a.deviceSelector(href="#", data-device="#{encodeURIComponent(device)}") #{device}
               li.dropdown.routeDatesDropdown
-                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                a.dropdown-toggle#selectedDate(href='#', data-toggle='dropdown')
                   | select date
                   b.caret
                 ul.dropdown-menu.routeDatesList

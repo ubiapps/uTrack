@@ -11,9 +11,9 @@ head
     link(href='/libs/bootstrap/css/bootstrap.min.css', rel='stylesheet')
     link(href='/css/bootStyle.css', rel='stylesheet')
     script.
-      var mapData = !{routeDate.length === 0 || routeIndex < 0 ? "{}" : JSON.stringify(routes[routeDate][routeIndex])};
-      var deviceId = "#{deviceId}";
-      var routeDate = "#{routeDate}";
+      var _deviceId = "#{deviceId}";
+      var _routeDate = "#{routeDate}";
+      var _routeIndex = #{routeIndex};
   body
     .navbar.navbar-default.navbar-fixed-top(role='navigation')
       .container
@@ -28,7 +28,7 @@ head
         .navbar-collapse.collapse
           ul.nav.navbar-nav.navbar-right
             li
-              button#journeySelector(class="btn btn-primary navbar-btn", type="button") select journey
+              a#journeySelector(href="#") select journey
             li.dropdown
               a.dropdown-toggle(href='#', data-toggle='dropdown')
                   | analysis
@@ -47,19 +47,16 @@ head
         .modal-content
           .modal-header
             button.close(type="button",data-dismiss="modal",aria-hidden="true") &times;
-            h4.modal-title#selectorLabel route selector
+            h4.modal-title#selectorLabel journey selector
           .modal-body
             ul.nav
               li.dropdown
                 a.dropdown-toggle(href='#', data-toggle='dropdown')
-                  if deviceId === ""
-                    | select device
-                  else
-                    | #{deviceId}
+                  | select device
                   b.caret
                 ul.dropdown-menu
                   each device in devices
-                    if device !== deviceId
+                    if device !== _deviceId
                       li
                         a.deviceSelector(href="#", data-device="#{encodeURIComponent(device)}") #{device}
               li.dropdown.routeDatesDropdown

@@ -1,6 +1,5 @@
 var _map;
 var _mapOverlays = [];
-var routeIndex;
 
 function distance(lat1, lon1, lat2, lon2) {
   var R = 6371;
@@ -71,6 +70,9 @@ var drawRoute = function(mapData) {
     map: _map
   });
   _mapOverlays.push(line);
+
+  _map.setCenter(smoothed[0]);
+  _map.setZoom(15);
 };
 
 $(function() {
@@ -80,11 +82,11 @@ $(function() {
   });
   $("#dateSelect").on("change.fs", function() {
     $(".loading").show();
-    window.location = "/map/" + encodeURIComponent(deviceId) + "/" + encodeURIComponent($(this).val());
+    window.location = "/map/" + encodeURIComponent(_deviceId) + "/" + encodeURIComponent($(this).val());
   });
   $("#routeSelect").on("change.fs", function() {
     $(".loading").show();
-    window.location = "/map/" + encodeURIComponent(deviceId) + "/" + routeDate + "/" + encodeURIComponent($(this).val());
+    window.location = "/map/" + encodeURIComponent(_deviceId) + "/" + _routeDate + "/" + encodeURIComponent($(this).val());
   });
 
   var mapOptions = {
@@ -106,9 +108,9 @@ $(function() {
   $(".deviceSelector").click(function(evt) {
     evt.preventDefault();
 
-    deviceId = this.dataset["device"];
+    _deviceId = this.dataset["device"];
     $.ajax({
-      url: "/api/" + deviceId,
+      url: "/api/" + _deviceId,
       cache: false
     }).done(function(routeDates) {
         $(".routeDatesDropdown").show();
@@ -122,9 +124,9 @@ $(function() {
   $(document).on("click",".dateSelector",function(evt) {
     evt.preventDefault();
 
-    routeDate = this.dataset["routedate"];
+    _routeDate = this.dataset["routedate"];
     $.ajax({
-      url: "/api/" + deviceId + "/" + routeDate,
+      url: "/api/" + _deviceId + "/" + _routeDate,
       cache: false
     }).done(function(routeIndices) {
         $(".routeIndexDropdown").show();
@@ -139,13 +141,13 @@ $(function() {
   $(document).on("click",".routeSelector",function(evt) {
     evt.preventDefault();
 
-    routeIndex = this.dataset["routeindex"];
+    _routeIndex = this.dataset["routeindex"];
     $.ajax({
-      url: "/api/" + deviceId + "/" + routeDate + "/" + routeIndex,
+      url: "/api/" + _deviceId + "/" + _routeDate + "/" + _routeIndex,
       cache: false
     }).done(function(routeData) {
         drawRoute(routeData);
-        $(".routeSelectorDialog").modal({ show: false});
+        $(".routeSelectorDialog").modal("hide");
       });
   });
 });

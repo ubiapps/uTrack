@@ -23,7 +23,7 @@ html
       a.logo(href="/map") uTrack
       div.headerSelect
         select.styleSelect#deviceSelect
-          option(value="") device
+          option(value="") select device
           each device in devices
             if device === deviceId
               option(value="#{device}", selected=true) #{device}
@@ -32,7 +32,7 @@ html
       if deviceId !== ""
         div.headerSelect
           select.styleSelect#dateSelect(data-class="dateSelect")
-            option(value="") date
+            option(value="") select date
             - for (var rDate in routes) {
               - if (rDate === routeDate) {
                 option(value="#{rDate}", selected=true) #{rDate}
@@ -43,11 +43,11 @@ html
       if routeDate !== ""
         div.headerSelect
           select.styleSelect#routeSelect(data-class="routeSelect")
-            option(value="") route
+            option(value="") select journey
             each route in routes[routeDate]
               if route.index == routeIndex
-                option(value="#{route.index}", selected=true) #{route.distance.toFixed(1) + "m"}
+                option(value="#{route.index}", selected=true) #{route.distance.toFixed(1) + "m at " + new Date(route.start).toTimeString().substr(0,9)}
               else
-                option(value="#{route.index}") #{route.distance.toFixed(1) + "m"}
+                option(value="#{route.index}") #{route.distance.toFixed(1) + "m at " + new Date(route.start).toTimeString().substr(0,9)}
       div.routeMap
       div.loading

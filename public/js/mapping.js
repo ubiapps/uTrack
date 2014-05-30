@@ -27,6 +27,29 @@ function determineRoutes() {
   return routes;
 }
 
+var smoothRoute = function(route) {
+  var routePoints = route.points;
+  var i, t, ax, ay, bx, by, cx, cy, dx, dy, lat, lon, points;
+  points = [];
+  for (i = 2; i < routePoints.length - 2; i++) {
+    for (t = 0; t < 1; t += 0.2) {
+      ax = (-routePoints[i - 2].location.coords.latitude + 3 * routePoints[i - 1].location.coords.latitude - 3 * routePoints[i].location.coords.latitude + routePoints[i + 1].location.coords.latitude) / 6;
+      ay = (-routePoints[i - 2].location.coords.longitude + 3 * routePoints[i - 1].location.coords.longitude - 3 * routePoints[i].location.coords.longitude + routePoints[i + 1].location.coords.longitude) / 6;
+      bx = (routePoints[i - 2].location.coords.latitude - 2 * routePoints[i - 1].location.coords.latitude + routePoints[i].location.coords.latitude) / 2;
+      by = (routePoints[i - 2].location.coords.longitude - 2 * routePoints[i - 1].location.coords.longitude + routePoints[i].location.coords.longitude) / 2;
+      cx = (-routePoints[i - 2].location.coords.latitude + routePoints[i].location.coords.latitude) / 2;
+      cy = (-routePoints[i - 2].location.coords.longitude + routePoints[i].location.coords.longitude) / 2;
+      dx = (routePoints[i - 2].location.coords.latitude + 4 * routePoints[i - 1].location.coords.latitude + routePoints[i].location.coords.latitude) / 6;
+      dy = (routePoints[i - 2].location.coords.longitude + 4 * routePoints[i - 1].location.coords.longitude + routePoints[i].location.coords.longitude) / 6;
+      lat = ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx;
+      lon = ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy;
+      points.push(new google.maps.LatLng(lat, lon));
+    }
+  }
+
+  return points;
+};
+
 $(function() {
   $("#deviceSelect").on("change.fs", function() {
     $(".loading").show();
@@ -41,24 +64,20 @@ $(function() {
     window.location = "/map/" + encodeURIComponent(deviceId) + "/" + routeDate + "/" + encodeURIComponent($(this).val());
   });
   if (mapData.hasOwnProperty("points")) {
-    var route = mapData.points;
-    var startPoint = new google.maps.LatLng(route[0].location.coords.latitude,route[0].location.coords.longitude);
+    var smoothed = smoothRoute(mapData);
     var mapOptions = {
-      center: startPoint,
+      center: smoothed[0],
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       navigationControl: true,
       navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL }
     };
     var _map = new google.maps.Map($(".routeMap")[0], mapOptions);
-    var routePath = route.map(function(el) {
-      return new google.maps.LatLng(el.location.coords.latitude, el.location.coords.longitude);
-    });
     var line = new google.maps.Polyline({
-      path: routePath,
+      path: smoothed,
       strokeColor: "#00007f",
       strokeOpacity: 0.8,
-      strokeWeight: 1,
+      strokeWeight: 2,
       map: _map
     });
   }

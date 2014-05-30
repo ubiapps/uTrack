@@ -15,13 +15,15 @@ header {
     background-image: url("logo.png");
     background-repeat: no-repeat;
     background-size: 150px;
+    position: fixed;
     width: 150px;
-    height: 90px;
+    height: 60px;
     display: block;
     text-indent: -9999px;
     overflow: hidden;
-    float: right;
-    margin-left: 25px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 2;
 }
 
 .clearFloat {
@@ -36,27 +38,27 @@ header {
 .routeMap {
     position: absolute;
     top: 90px;
-    left: 0;
+    left: 0px;
     bottom: 0px;
-    right: 0;
+    right: 0px;
 }
 
 .loading {
     display: none;
     position: absolute;
     top: 90px;
-    left: 0;
+    left: 0px;
     bottom: 0px;
-    right: 0;
+    right: 0px;
     background-image: url("loading.gif");
     background-position: center center;
     background-repeat: no-repeat;
 }
 
 div.fancy-select.dateSelect div.trigger  {
-    width: 140px;
+    /*width: 140px;*/
 }
 
 div.fancy-select.routeSelect div.trigger  {
-    width: 100px;
+    /*width: 100px;*/
 }

@@ -9,7 +9,7 @@ var routeThreshold = 600;
 app.set("views", __dirname + "/views");
 app.set("view engine","jade");
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: "50Mb" }));
 app.locals.pretty = true;
 
 app.get("/api/devices", function(req,res) {
@@ -40,7 +40,7 @@ app.get("/api/:id/:routeDate/:routeIndex", function(req, res) {
   res.json(routes[routeDate][routeIndex]);
 });
 
-app.get("/view", function(req, res) {
+app.get("/api/json", function(req, res) {
   res.sendfile(cache.getCacheFilePath());
 });
 

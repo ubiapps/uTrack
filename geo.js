@@ -33,6 +33,7 @@
     // Need at least two way-points.
     if (mapData.length > 1) {
       var route = newRoute(mapData[0]);
+      var stationaryTime = 0;
       for (var i = 0, len = mapData.length; i < len-1; i++) {
         var p1 = mapData[i].location.coords;
         var p2 = mapData[i+1].location.coords;
@@ -48,9 +49,21 @@
         // Add point to route.
         route.points.push(mapData[i]);
         // Check for new route.
+        var breakPoint = false;
         if (time > stationaryThreshold) {
+          breakPoint = true;
+        } else if (speed < 0.01) {
+          stationaryTime += time;
+          if (stationaryTime > 120) {
+            breakPoint = true;
+          }
+        } else {
+          stationaryTime = 0;
+        }
+        if (breakPoint) {
           addRoute(route);
           route = newRoute(mapData[i+1]);
+          stationaryTime = 0;
         }
       }
       addRoute(route);

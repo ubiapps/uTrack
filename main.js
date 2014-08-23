@@ -9,7 +9,7 @@ var routeThreshold = 600;
 app.set("views", __dirname + "/views");
 app.set("view engine","jade");
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json({limit: "50Mb" }));
+app.use(bodyParser.json({limit: (5*1024*1000) }));
 app.locals.pretty = true;
 
 app.get("/api/devices", function(req,res) {
